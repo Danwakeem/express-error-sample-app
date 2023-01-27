@@ -1,4 +1,4 @@
-service: aws-lambda-typescript-express-error
+service: aws-lambda-express-error
 configValidationMode: error
 
 provider:
@@ -33,7 +33,7 @@ plugins:
   - serverless-v3-dynamodb-seed
 
 custom:
-  TABLE_NAME: aws-lambda-ts-express-dynamo-${sls:stage}
+  TABLE_NAME: aws-lambda-typescript-express-error-${sls:stage}
   seed:
     formData:
       table: ${self:custom.TABLE_NAME}
