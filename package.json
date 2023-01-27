@@ -1,0 +1,40 @@
+{
+  "name": "aws-lambda-typescript-express",
+  "version": "0.0.1",
+  "description": "Simple REST API",
+  "main": "index.js",
+  "repository": "https://github.com/OddToed/project-weaver",
+  "author": "Danwakeem",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "test": "jest ./src --coverage",
+    "lint": "eslint ./src",
+    "lint:fix": "eslint ./src --fix",
+    "deploy:test": "SERVERLESS_PLATFORM_STAGE=dev sls deploy --verbose",
+    "deploy": "sls deploy --verbose",
+    "seed": "sls dynamodb:seed"
+  },
+  "devDependencies": {
+    "@types/cookie-parser": "^1.4.2",
+    "@types/express": "^4.17.13",
+    "@types/morgan": "^1.9.3",
+    "eslint": "^8.5.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "jest": "^27.4.5",
+    "prettier": "^2.5.1",
+    "serverless": "^3.26.0",
+    "serverless-v3-dynamodb-seed": "^0.3.2"
+  },
+  "dependencies": {
+    "@aws-lambda-powertools/logger": "^1.5.0",
+    "@aws-sdk/client-dynamodb": "^3.56.0",
+    "@aws-sdk/lib-dynamodb": "^3.56.0",
+    "@serverless/sdk": "^0.4.1",
+    "cookie-parser": "^1.4.6",
+    "express": "^4.17.2",
+    "morgan": "^1.10.0",
+    "serverless-http": "^2.7.0"
+  }
+}

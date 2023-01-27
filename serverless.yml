@@ -1,0 +1,86 @@
+service: aws-lambda-typescript-express-error
+configValidationMode: error
+
+provider:
+  name: aws
+  versionFunctions: false
+  runtime: nodejs18.x
+  environment:
+    STAGE: ${sls:stage}
+    TABLE_NAME: ${self:custom.TABLE_NAME}
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:DescribeTable
+            - dynamodb:Query
+            - dynamodb:Scan
+            - dynamodb:UpdateItem
+            - dynamodb:GetItem
+            - dynamodb:BatchGetItem
+            - dynamodb:DeleteItem
+            - dynamodb:BatchWriteItem
+            - dynamodb:PutItem
+            - dynamodb:GetRecords
+            - dynamodb:GetShardIterator
+            - dynamodb:DescribeStream
+            - dynamodb:ListStreams
+          Resource:
+            - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${self:custom.TABLE_NAME}*
+
+plugins:
+  - serverless-v3-dynamodb-seed
+
+custom:
+  TABLE_NAME: aws-lambda-ts-express-dynamo-${sls:stage}
+  seed:
+    formData:
+      table: ${self:custom.TABLE_NAME}
+      sources:
+        - seeds/formData.json
+
+package:
+  individually: true
+  patterns:
+    - '!coverage/**'
+    - '!.serverless/**'
+    - '!src/**/*.test.js'
+    - '!src/**/*.snap'
+    - '!.*'
+    - '!.github/*'
+    - '!*.sh'
+    - '!env.sample'
+    - '!assets/**'
+    - '!package.json'
+    - '!yarn.lock'
+    - '!README.md'
+    - '!jest.config.js'
+    - 'collector.yml'
+
+resources:
+  Resources:
+    ExpressTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:custom.TABLE_NAME}
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: pk
+            AttributeType: S
+          - AttributeName: sk
+            AttributeType: S
+        KeySchema:
+          - AttributeName: pk
+            KeyType: HASH
+          - AttributeName: sk
+            KeyType: RANGE
+
+functions:
+  api:
+    handler: src/app.handler
+    timeout: 20
+    events:
+      - httpApi:
+          path: /{proxy+}
+          method: ANY
